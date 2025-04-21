@@ -4,4 +4,4 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
-    return HttpResponse("Hello World! This is my first Django app.")
+    return render(request, 'FirstTestApp/index.html', {'project_count': 101})
