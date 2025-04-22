@@ -21,7 +21,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-MEDIA_ROOT =  BASE_DIR/'media' # MEDIA_ROOT is for server path to store files in the computer
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # MEDIA_ROOT is for server path to store files in the computer
 MEDIA_URL = '/media/' # MEDIA_URL is the reference URL for browser to access the files over Http
 
 # Quick-start development settings - unsuitable for production
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FirstTestApp',
+    'common',
 ]
 
 MIDDLEWARE = [
