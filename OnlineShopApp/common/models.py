@@ -134,7 +134,7 @@ class Userprofiles(models.Model):
         verbose_name_plural = 'UserProfiles'
 
     def __str__(self):
-        return f"UserProfile - Username: {self.authuser.username} (Id:{self.profile_id})"
+        return f"UserProfile - Username: {self.authuser.username} (AuthUser_ID:{self.profile_id})"
 
 
 class AuthGroup(models.Model):
@@ -182,6 +182,9 @@ class AuthUser(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_user'
+
+    def __str__(self):
+        return f"AuthUser: {self.username} (ID:{self.id})"
 
 
 class AuthUserGroups(models.Model):
