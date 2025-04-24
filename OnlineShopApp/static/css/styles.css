@@ -102,6 +102,7 @@ body {
   background-color: var(--bs-body-bg);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  height: 100%; 
 }
 
 hr {
@@ -7780,6 +7781,19 @@ textarea.form-control-lg {
   padding-top: 1.5rem !important;
   padding-bottom: 1.5rem !important;
 }
+
+footer {
+  position: fixed; /* Фіксоване розташування */
+  bottom: 0; /* Встановлюємо футер на низ */
+  left: 0; /* Встановлюємо футер до лівого краю */
+  width: 100%; /* Ширина на всю сторінку */
+  background-color: #333; /* Колір фону футера */
+  color: white; /* Колір тексту */
+  text-align: center; /* Вирівнювання тексту по центру */
+  padding: 1rem; /* Відступи всередині футера */
+  font-size: 1rem; /* Розмір шрифту */
+}
+
 
 .py-5 {
   padding-top: 3rem !important;
