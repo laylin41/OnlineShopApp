@@ -1,24 +1,22 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вхід</title>
-</head>
-<body>
-    <h2>Вхід в акаунт</h2>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Увійти</button>
-    </form>
-    <p>Ще немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/login.css' %}" rel="stylesheet" />
+{% endblock %}
+ 
+{% block content %}
+<div class="form-wrapper">
+    <div class="form-container">
+        <h2>Вхід в акаунт</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Увійти</button>
+        </form>
+        <p>Ще немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+    </div>
+</div>
+{% endblock %}
