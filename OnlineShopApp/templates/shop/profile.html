@@ -1,22 +1,81 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Персональний кабінет{% endblock %}
 {% block head %}
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
 <link href="{% static 'css/login.css' %}" rel="stylesheet" />
 {% endblock %}
  
 {% block content %}
+
 <div class="form-wrapper">
     <div class="form-container">
-        <h2>Вхід в акаунт</h2>
-        <form method="POST">
+        <h2>Персональний кабінет</h2>
+        <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Увійти</button>
+            <!-- Manually render each form field to control the order -->
+            
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">Ім'я</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Прізвище</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Електронна пошта</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Ім'я користувача</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="error-message">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Номер телефону</label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    <div class="error-message">{{ form.phone_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.base_delivery_adress.id_for_label }}">Базова адреса доставки</label>
+                {{ form.base_delivery_adress }}
+                {% if form.base_delivery_adress.errors %}
+                    <div class="error-message">{{ form.base_delivery_adress.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.display_name.id_for_label }}">Відображуване ім'я</label>
+                {{ form.display_name }}
+                {% if form.display_name.errors %}
+                    <div class="error-message">{{ form.display_name.errors }}</div>
+                {% endif %}
+            </div>
+            <br>
+            <button type="submit">Зберегти зміни</button>
         </form>
-        <p>Ще немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+        <p><a href="{% url 'change_password' %}">Змінити пароль</a></p>
     </div>
 </div>
+
 {% endblock %}

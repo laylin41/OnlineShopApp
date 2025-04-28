@@ -31,10 +31,10 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
 
 class UserProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=150, required=True)
-    last_name = forms.CharField(max_length=150, required=True)
-    email = forms.EmailField(required=True)
-    username = forms.CharField(max_length=150, required=True)
+    first_name = forms.CharField(max_length=150, required=False)
+    last_name = forms.CharField(max_length=150, required=False)
+    email = forms.EmailField(required=False)
+    username = forms.CharField(max_length=150, required=False)
 
     class Meta:
         model = Userprofiles
@@ -43,6 +43,8 @@ class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         authuser_instance = kwargs.pop('authuser_instance', None)
         super().__init__(*args, **kwargs)
+
+        self.fields['display_name'].required = True
         if authuser_instance:
             self.fields['first_name'].initial = authuser_instance.first_name
             self.fields['last_name'].initial = authuser_instance.last_name

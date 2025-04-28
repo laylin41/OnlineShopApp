@@ -72,6 +72,8 @@ def login(request):
                     messages.error(request, "Неправильний пароль.")
             except AuthUser.DoesNotExist:
                 messages.error(request, "Користувача не знайдено.")
+        else:
+            messages.error(request, "Помилка у формі.")
     else:
         form = LoginForm()
 
@@ -82,51 +84,45 @@ def logout(request):
     request.session.flush()
     return redirect("/")
 
-@login_required
 def profile(request):
     user_id = request.session.get('user_id')
     if user_id:
-        user = AuthUser.objects.get(id=user_id)
-        user_profile = Userprofiles.objects.get(authuser=user)
-        return render(request, 'shop/profile.html', {'user_profile': user_profile})
+        authuser = AuthUser.objects.get(id=user_id)
+        profile = Userprofiles.objects.get(authuser=authuser)
+
+        if request.method == 'POST':
+            form = UserProfileForm(request.POST, instance=profile, authuser_instance=authuser)
+            if form.is_valid():
+                authuser.first_name = form.cleaned_data['first_name']
+                authuser.last_name = form.cleaned_data['last_name']
+                authuser.email = form.cleaned_data['email']
+                authuser.username = form.cleaned_data['username']
+                authuser.save()
+                form.save()
+                messages.success(request, 'Профіль успішно оновлено')
+                return redirect('/profile/')
+        else:
+            form = UserProfileForm(instance=profile, authuser_instance=authuser)
+
+        return render(request, 'shop/profile.html', {'form': form, 'logged_in': True})
     else:
-        redirect('/login/')
-
-@login_required
-def profile(request):
-    user_id = request.session.get('user_id')
-    authuser = AuthUser.objects.get(id=user_id)
-    profile = Userprofiles.objects.get(authuser=authuser)
-
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=profile, authuser_instance=authuser)
-        if form.is_valid():
-            authuser.first_name = form.cleaned_data['first_name']
-            authuser.last_name = form.cleaned_data['last_name']
-            authuser.email = form.cleaned_data['email']
-            authuser.username = form.cleaned_data['username']
-            authuser.save()
-            form.save()
-            messages.success(request, 'Профіль успішно оновлено')
-            return redirect('/profile/')
-    else:
-        form = UserProfileForm(instance=profile, authuser_instance=authuser)
-
-    return render(request, 'shop/profile.html', {'form': form})
-
-@login_required
+        return redirect('/login/')
+    
 def change_password(request):
     user_id = request.session.get('user_id')
-    authuser = AuthUser.objects.get(id=user_id)
+    if user_id:
+        authuser = AuthUser.objects.get(id=user_id)
 
-    if request.method == 'POST':
-        form = ChangePasswordForm(request.POST, user=authuser)
-        if form.is_valid():
-            authuser.password = make_password(form.cleaned_data['new_password'])
-            authuser.save()
-            messages.success(request, 'Пароль успішно змінено')
-            return redirect('/profile/')
+        if request.method == 'POST':
+            form = ChangePasswordForm(request.POST, user=authuser)
+            if form.is_valid():
+                authuser.password = make_password(form.cleaned_data['new_password'])
+                authuser.save()
+                messages.success(request, 'Пароль успішно змінено')
+                return redirect('/profile/')
+        else:
+            form = ChangePasswordForm(user=authuser)
+
+        return render(request, 'shop/change_password.html', {'form': form, 'logged_in': True})
     else:
-        form = ChangePasswordForm(user=authuser)
-
-    return render(request, 'shop/change_password.html', {'form': form})
+        return redirect('/login/')
