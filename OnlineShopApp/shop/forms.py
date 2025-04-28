@@ -29,3 +29,44 @@ class RegisterForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(label="Ім’я користувача", max_length=150)
     password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
+
+class UserProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=150, required=False)
+    last_name = forms.CharField(max_length=150, required=False)
+    email = forms.EmailField(required=False)
+    username = forms.CharField(max_length=150, required=False)
+
+    class Meta:
+        model = Userprofiles
+        fields = ['phone_number', 'base_delivery_adress', 'display_name']
+
+    def __init__(self, *args, **kwargs):
+        authuser_instance = kwargs.pop('authuser_instance', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['display_name'].required = True
+        if authuser_instance:
+            self.fields['first_name'].initial = authuser_instance.first_name
+            self.fields['last_name'].initial = authuser_instance.last_name
+            self.fields['email'].initial = authuser_instance.email
+            self.fields['username'].initial = authuser_instance.username
+
+from django.contrib.auth.hashers import check_password
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput, label='Старий пароль')
+    new_password = forms.CharField(widget=forms.PasswordInput, label='Новий пароль')
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Підтвердіть пароль')
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not check_password(cleaned_data.get('old_password'), self.user.password):
+            self.add_error('old_password', 'Неправильний старий пароль')
+        if cleaned_data.get('new_password') != cleaned_data.get('confirm_password'):
+            self.add_error('confirm_password', 'Паролі не співпадають')
+        return cleaned_data
+
