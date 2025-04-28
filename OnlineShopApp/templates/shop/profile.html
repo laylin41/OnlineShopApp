@@ -1,4 +1,22 @@
-<p> This is user profile</p>
+{% extends "base.html" %}
+{% load static %}
 
-<p> User name: {{ user_profile.authuser.username }}</p>
-<p> Password: {{ user_profile.authuser.password }}</p>
+{% block title %}Login{% endblock %}
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/login.css' %}" rel="stylesheet" />
+{% endblock %}
+ 
+{% block content %}
+<div class="form-wrapper">
+    <div class="form-container">
+        <h2>Вхід в акаунт</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Увійти</button>
+        </form>
+        <p>Ще немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+    </div>
+</div>
+{% endblock %}
