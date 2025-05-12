@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import now
+
+from shop.forms import ReviewForm
 from .forms import RegisterForm, LoginForm, UserProfileForm, ChangePasswordForm
-from common.models import AuthUser, Userprofiles
+from common.models import AuthUser, Userprofiles, Goods, Reviews
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -10,12 +12,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 def index(request):
-    if request.session.get('user_id'):
-        context = {'logged_in': True}
-    else:
-        context = {'logged_in': False}
-    
+    goods = Goods.objects.filter(quantity__gt=0)
+    context = {
+        'logged_in': bool(request.session.get('user_id')),
+        'goods': goods
+    }
     return render(request, 'shop/index.html', context)
+
 
 def register(request):
     if request.method == "POST":
@@ -66,6 +69,15 @@ def login(request):
                 if check_password(password, user.password):
                     request.session['user_id'] = user.id 
                     request.session['username'] = user.username
+                    #start
+                    # Знаходимо профіль користувача та зберігаємо його ID у сесію.
+                    # Це потрібно для створення, редагування та видалення відгуків.
+                    try:
+                        user_profile = Userprofiles.objects.get(authuser=user)
+                        request.session['user_profile_id'] = user_profile.profile_id
+                    except Userprofiles.DoesNotExist:
+                        request.session['user_profile_id'] = None
+                    #end
                     messages.success(request, "Вхід успішний!")
                     return redirect("/")
                 else:
@@ -126,3 +138,83 @@ def change_password(request):
         return render(request, 'shop/change_password.html', {'form': form, 'logged_in': True})
     else:
         return redirect('/login/')
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+from common.models import Goods, Reviews, Userprofiles
+from .forms import ReviewForm
+
+def goods_detail(request, good_id):
+    good = get_object_or_404(Goods, pk=good_id)
+    reviews = Reviews.objects.filter(good=good)
+    user_profile_id = request.session.get('user_profile_id')
+
+    # Окремі форми для створення та редагування
+    review_form = ReviewForm()
+    edit_form = None
+    editing_review = None
+
+    # Якщо є ?edit=... в URL — підготуємо edit_form
+    edit_review_id = request.GET.get('edit')
+    if edit_review_id and user_profile_id:
+        try:
+            editing_review = Reviews.objects.get(
+                pk=edit_review_id,
+                userprofile_id=user_profile_id,
+                good=good
+            )
+            edit_form = ReviewForm(instance=editing_review)
+        except Reviews.DoesNotExist:
+            editing_review = None
+
+    from django.http import HttpResponseRedirect
+
+    # Обробка POST-запиту — або редагування, або новий відгук
+    if request.method == 'POST' and user_profile_id:
+        review_id = request.POST.get('review_id')
+        if review_id:  # редагування
+            review = get_object_or_404(
+                Reviews,
+                pk=review_id,
+                userprofile_id=user_profile_id,
+                good=good
+            )
+            edit_form = ReviewForm(request.POST, instance=review)
+            if edit_form.is_valid():
+                updated = edit_form.save(commit=False)
+                updated.good = good
+                updated.userprofile_id = user_profile_id
+                updated.save()
+                return HttpResponseRedirect(f"{request.path}#review-{updated.review_id}")
+
+        else:  # створення нового
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                new = review_form.save(commit=False)
+                new.good = good
+                new.userprofile_id = user_profile_id
+                new.save()
+                return redirect('goods-detail', good_id=good.good_id)
+
+    return render(request, 'shop/goods_detail.html', {
+        'good': good,
+        'reviews': reviews,
+        'review_form': review_form,
+        'edit_form': edit_form,
+        'editing_review': editing_review,
+        'user_profile_id': user_profile_id,
+    })
+
+
+def delete_review(request, review_id):
+    user_profile_id = request.session.get('user_profile_id')
+    if not user_profile_id:
+        return redirect('login')
+
+    review = get_object_or_404(Reviews, pk=review_id)
+    if review.userprofile.profile_id != user_profile_id:
+        return HttpResponse("Недостатньо прав", status=403)
+
+    good_id = review.good.good_id
+    review.delete()
+    return redirect('goods-detail', good_id=good_id)

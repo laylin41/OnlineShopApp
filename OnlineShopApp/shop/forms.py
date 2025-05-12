@@ -1,5 +1,5 @@
 from django import forms
-from common.models import AuthUser, Userprofiles
+from common.models import AuthUser, Userprofiles, Reviews
 from django.utils import timezone
 
 class RegisterForm(forms.Form):
@@ -69,4 +69,16 @@ class ChangePasswordForm(forms.Form):
         if cleaned_data.get('new_password') != cleaned_data.get('confirm_password'):
             self.add_error('confirm_password', 'Паролі не співпадають')
         return cleaned_data
+
+class ReviewForm(forms.ModelForm):
+    RATING_CHOICES = [(i, i) for i in range(1, 6)]
+
+    rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.Select(), label="Оцінка")
+
+    class Meta:
+        model = Reviews
+        fields = ['rating', 'comment']
+        labels = {
+            'comment': 'Коментар'
+        }
 

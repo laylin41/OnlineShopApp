@@ -31,7 +31,8 @@
             </form>
         </div>
         <ul class="navbar-nav ms-auto">
-            {% if logged_in %}
+            {% comment %}{% if logged_in %}{% endcomment %}
+            {% if request.session.user_id %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Мій профіль</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Вийти</a></li>
             {% else %}
