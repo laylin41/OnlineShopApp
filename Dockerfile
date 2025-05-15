@@ -10,7 +10,7 @@ COPY . .
 ENV DJANGO_SETTINGS_MODULE=onlineshop.settings
 ENV PYTHONPATH=/app
 ENV MODE=PRODUCTION
-ENV ALLOWED_HOSTS=https://rural-molly-laylin41-bbd1218f.koyeb.app/
+ENV ALLOWED_HOSTS=rural-molly-laylin41-bbd1218f.koyeb.app
 
 RUN python onlineshop/manage.py collectstatic --noinput
 
