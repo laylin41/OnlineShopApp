@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Homepage{% endblock %}
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block header %}
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop in style</h1>
+                <p class="lead fw-normal text-white-50 mb-0">With this shop homepage template</p>
+            </div>
+        </div>
+    </header>
+{% endblock %}        
+{% block content %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            {% for good in goods %}
+                {% if good.quantity > 0 %}
+                    <div class="col mb-5">
+                        <div class="card h-100 p-3">
+                            {% with good.goodimage_set.first as image %}
+                              {% if image %}
+                                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ good.name }}">
+                              {% endif %}
+                            {% endwith %}
+                            <div class="card-body text-center">
+                                <h5 class="fw-bolder">
+                                    <a href="{% url 'goods-detail' good_id=good.good_id %}">
+                                        {{ good.name }}
+                                    </a>
+                                </h5>
+                                <p>Ціна: {{ good.price }} грн</p>
+                                {% if good.discount > 0 %}
+                                    <p><del>{{ good.price }} грн</del></p>
+                                    <p>
+                                        <span class="text-danger">{{ good.discounted_price }} грн</span>
+                                        <span class="badge bg-success">-{{ good.discount }}%</span>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

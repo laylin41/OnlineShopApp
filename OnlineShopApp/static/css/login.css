@@ -1,0 +1,109 @@
+@charset "UTF-8";
+html, body {
+    height: auto; /* Забезпечує, щоб висота сторінки займала весь екран */
+}
+
+.form-wrapper {
+    display: flex;
+    justify-content: center; /* Горизонтальне центровання */
+    align-items: center; /* Вертикальне центровання */
+    background-color: #f4f4f4; /* Можна змінити колір фону */
+    padding: 20px; /* Відступи навколо форми */
+    flex-direction: column; /* Всі елементи на сторінці будуть розміщені вертикально */
+    min-height: 100%; /* Сторінка повинна займати мінімум висоту екрану */
+    padding: 29.5px; /* Відступи навколо форми */
+}
+
+.form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column; /* Робимо контейнер вертикальним */
+    gap: 1rem; /* Відстань між полями */
+}
+
+.form-container input,
+.form-container button {
+    padding: 0.8rem; /* Відступи всередині полів */
+    font-size: 1rem; /* Розмір шрифту для введення */
+    width: 100%; /* Поля займають всю ширину контейнера */
+    border-radius: 8px; /* Заокруглення країв */
+    border: 1px solid #ddd; /* Лінія навколо полів */
+}
+
+.form-container button {
+    background-color: #007bff; /* Колір фону кнопки */
+    color: white; /* Колір тексту на кнопці */
+    border: none; /* Без межі */
+    cursor: pointer; /* Курсор при наведенні */
+    font-size: 1rem; /* Розмір шрифту на кнопці */
+}
+
+.form-container button:hover {
+    background-color:  #0056b3; /* Темніший колір при наведенні */
+}
+
+.form-container p {
+    text-align: center;
+}
+
+.form-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    margin-bottom: 0rem;
+    text-align: center;
+}
+.messages {
+    margin-bottom: 1rem;
+    list-style: none;
+    padding: 0;
+}
+.messages li {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+.messages .success {
+    background: #d4edda;
+    color: #155724;
+}
+.messages .error {
+    background: #f8d7da;
+    color: #721c24;
+}
+button {
+    background: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1rem;
+}
+button:hover {
+    background: #0056b3;
+}
+p {
+    text-align: center;
+    margin-top: 1rem;
+}
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+{% block head %}
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/register.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+{% include "includes/messages.html" %}
+
+<div class="form-wrapper">
+    <div class="form-container">
+        <h2>Реєстрація</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Зареєструватися</button>
+        </form>
+        <p>Вже є акаунт? <a href="{% url 'login' %}">Увійти</a></p>
+    </div>
+</div>
+{% endblock %}

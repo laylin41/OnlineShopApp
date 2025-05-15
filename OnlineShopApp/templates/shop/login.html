@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/login.css' %}" rel="stylesheet" />
+{% endblock %}
+ 
+{% block content %}
+
+{% include "includes/messages.html" %}
+
+<div class="form-wrapper">
+    <div class="form-container">
+        <h2>Вхід в акаунт</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Увійти</button>
+        </form>
+        <p>Ще немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+    </div>
+    <br>
+    <br>
+    <br>
+</div>
+{% endblock %}

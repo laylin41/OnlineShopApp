@@ -1,6 +1,7 @@
 # Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the TABLE in the database
 # Feel free to rename the models, but DON'T rename db_table values or field names.
 from django.db import models
+from django.db.models import Avg
 from django.utils.text import slugify
 
 class Categories(models.Model):
@@ -39,7 +40,17 @@ class Goods(models.Model):
     description = models.TextField(db_column='Description', blank=True, null=True)  
     characteristics = models.TextField(db_column='Characteristics', blank=True, null=True) 
     rating = models.FloatField(db_column='Rating', blank=True, null=True) 
-    quantity = models.IntegerField(db_column='Quantity', blank=True, null=True)  
+    quantity = models.IntegerField(db_column='Quantity', blank=True, null=True)
+
+    @property
+    def discounted_price(self):
+        if self.discount:
+            return round(self.price * (1 - self.discount / 100), 2)
+        return self.price
+
+    @property
+    def average_rating(self):
+        return self.reviews_set.aggregate(avg=Avg('rating'))['avg'] or 0
 
     class Meta:
         managed = False
