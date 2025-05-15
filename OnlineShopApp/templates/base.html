@@ -7,10 +7,14 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-        {% include "includes/navbar.html" %}
-        {% block header %}{% endblock %}
-        {% block content %}{% endblock %}
-        {% include "includes/footer.html" %}
+        <div class="page-wrapper">
+            {% include "includes/navbar.html" %}
+            {% block header %}{% endblock %}
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+            {% include "includes/footer.html" %}
+        </div>
     </body>
     {% block scripts %}
         <!-- Bootstrap core JS-->

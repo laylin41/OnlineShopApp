@@ -7786,18 +7786,19 @@ textarea.form-control-lg {
   padding-bottom: 1.5rem !important;
 }
 
-footer {
-  position: fixed; /* Фіксоване розташування */
-  bottom: 0; /* Встановлюємо футер на низ */
-  left: 0; /* Встановлюємо футер до лівого краю */
-  width: 100%; /* Ширина на всю сторінку */
-  background-color: #333; /* Колір фону футера */
-  color: white; /* Колір тексту */
-  text-align: center; /* Вирівнювання тексту по центру */
-  padding: 1rem; /* Відступи всередині футера */
-  font-size: 1rem; /* Розмір шрифту */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
+.page-footer {
+  position: relative;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
 
 .py-5 {
   padding-top: 3rem !important;
