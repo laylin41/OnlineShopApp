@@ -33,9 +33,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 mode = os.getenv("MODE")
-if mode == "LOCAL":
+debug = os.getenv("DEBUG")
+if debug == "TRUE":
     DEBUG = True
-elif mode == "PRODUCTION":
+elif debug == "FALSE":
     DEBUG = False
 
 if mode == "LOCAL":
