@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop',
-    'common',
+    'shop.apps.ShopConfig',
+    'common.apps.CommonConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +70,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
-ROOT_URLCONF = 'OnlineShopApp.urls'
+ROOT_URLCONF = 'onlineshop.urls'
 
 TEMPLATES = [
     {
@@ -88,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'OnlineShopApp.wsgi.application'
+WSGI_APPLICATION = 'onlineshop.wsgi.application'
 
 
 # Database
