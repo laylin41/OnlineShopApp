@@ -10,7 +10,6 @@ db.sqlite3
 db.sqlite3-journal
 *.sqlite3
 media/  # Updated from OnlineShopApp/media
-static/
 
 # Python
 .Python
