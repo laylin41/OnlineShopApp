@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-# Add these at the top of your settings.py
 import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse
@@ -30,13 +29,22 @@ MEDIA_URL = '/media/' # MEDIA_URL is the reference URL for browser to access the
 LOGIN_URL = '/login/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jnz@qn8100!dg*focjwih=l7s%oi34h35l+f^4+1_*&89s5z3-'
+SECRET_KEY = os.getenv("SECRET_KEY") 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+mode = os.getenv("MODE")
+if mode == "LOCAL":
+    DEBUG = True
+elif mode == "PRODUCTION":
+    DEBUG = False
 
-ALLOWED_HOSTS = []
-
+if mode == "LOCAL":
+    ALLOWED_HOSTS = ["*"]
+elif mode == "PRODUCTION":
+    hosts = os.getenv("ALLOWED_HOSTS", "")
+    if not hosts:
+        raise ValueError("ALLOWED_HOSTS must be set in production!")
+    ALLOWED_HOSTS = hosts.split(",")
 
 # Application definition
 
@@ -59,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'OnlineShopApp.urls'
