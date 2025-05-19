@@ -33,9 +33,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 mode = os.getenv("MODE")
-if mode == "LOCAL":
+debug = os.getenv("DEBUG")
+if debug == "TRUE":
     DEBUG = True
-elif mode == "PRODUCTION":
+elif debug == "FALSE":
     DEBUG = False
 
 if mode == "LOCAL":
@@ -55,8 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop',
-    'common',
+    'shop.apps.ShopConfig',
+    'common.apps.CommonConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
-ROOT_URLCONF = 'OnlineShopApp.urls'
+ROOT_URLCONF = 'onlineshop.urls'
 
 TEMPLATES = [
     {
@@ -88,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'OnlineShopApp.wsgi.application'
+WSGI_APPLICATION = 'onlineshop.wsgi.application'
 
 
 # Database
@@ -100,7 +101,7 @@ tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', ''),
+        'NAME': (tmpPostgres.path.decode() if isinstance(tmpPostgres.path, bytes) else tmpPostgres.path).replace('/', ''),
         'USER': tmpPostgres.username,
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
@@ -143,10 +144,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static", # where source static files are stored
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles" # where collectstatic copies to
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://rural-molly-laylin41-bbd1218f.koyeb.app",
 ]
 
 # Default primary key field type
