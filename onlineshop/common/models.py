@@ -3,6 +3,7 @@
 from django.db import models
 from django.db.models import Avg
 from django.utils.text import slugify
+from django.contrib.auth.hashers import make_password
 
 class Categories(models.Model):
     category_id = models.AutoField(db_column='Category_ID', primary_key=True) 
@@ -193,6 +194,9 @@ class AuthUser(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_user'
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
 
     def __str__(self):
         return f"AuthUser: {self.username} (ID:{self.id})"
