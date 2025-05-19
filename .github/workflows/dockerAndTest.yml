@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: onlineshop-env   # ← Ось сюди додано
 
     steps:
     - name: Checkout code
@@ -16,16 +17,16 @@ jobs:
 
     - name: Create .env file
       run: |
-         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-         echo "DEBUG=${{ vars.DEBUG }}" >> .env
-         echo "MODE=LOCAL" >> .env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "DEBUG=${{ vars.DEBUG }}" >> .env
+        echo "MODE=LOCAL" >> .env
 
     - name: Debug .env file contents
       run: |
-         echo "===== .env file contents ====="
-         cat .env
-         echo "==============================="
+        echo "===== .env file contents ====="
+        cat .env
+        echo "==============================="
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -58,3 +59,4 @@ jobs:
       run: |
         docker stop onlineshop_test
         docker rm onlineshop_test
+        
