@@ -47,6 +47,10 @@ jobs:
           sleep 3
         done
 
+    - name: Show container logs if failed
+      if: failure()
+      run: docker logs onlineshop_test
+
     - name: Run Django tests inside container
       run: |
         docker exec onlineshop_test python manage.py test --settings=onlineshop.test_settings
