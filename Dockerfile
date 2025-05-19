@@ -14,4 +14,4 @@ ENV ALLOWED_HOSTS=rural-molly-laylin41-bbd1218f.koyeb.app
 
 RUN python manage.py collectstatic --noinput
 
-CMD gunicorn onlineshop.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn onlineshop.wsgi:application --bind 0.0.0.0:8000
