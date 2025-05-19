@@ -35,7 +35,9 @@ jobs:
 
     - name: Run Docker container in background
       run: |
-        run: docker run -d --name onlineshop_test --env-file .env -p 8000:8000 onlineshopapp-web
+        docker run -d --name onlineshop_test \
+          --env-file .env \
+          -p 8000:8000 onlineshopapp-web
 
     - name: Wait for container to be ready
       run: |
