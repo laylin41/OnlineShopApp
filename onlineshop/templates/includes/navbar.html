@@ -21,6 +21,26 @@
                         <li><a class="dropdown-item" href="#">Новинки</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown d-flex align-items-center">
+                    <!-- Лінка на категорії -->
+                    <a class="nav-link" href="{% url 'all_categories_show' %}" id="categoriesLink">
+                        Категорії
+                    </a>
+                    <!-- Dropdown toggle (кнопка для відкривання меню на одному рівні) -->
+                    <a class="nav-link dropdown-toggle no-arrow" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                    <!-- Dropdown menu -->
+                    <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                        {% for category in categories %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'category_show' category_id=category.category_id %}">
+                                    {{ category.category_name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+
             </ul>
             <form class="d-flex me-3">
                 <button class="btn btn-outline-dark" type="submit">
@@ -30,8 +50,8 @@
                 </button>
             </form>
         </div>
+
         <ul class="navbar-nav ms-auto">
-            {% comment %}{% if logged_in %}{% endcomment %}
             {% if request.session.user_id %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Мій профіль</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Вийти</a></li>
@@ -42,3 +62,5 @@
         </ul>
     </div>
 </nav>
+
+

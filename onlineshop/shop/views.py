@@ -4,7 +4,7 @@ from django.utils.timezone import now
 
 from shop.forms import ReviewForm
 from .forms import RegisterForm, LoginForm, UserProfileForm, ChangePasswordForm
-from common.models import AuthUser, Userprofiles, Goods, Reviews
+from common.models import AuthUser, Userprofiles, Goods, Reviews, Categories
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -218,3 +218,17 @@ def delete_review(request, review_id):
     good_id = review.good.good_id
     review.delete()
     return redirect('goods-detail', good_id=good_id)
+
+
+def category_show(request, category_id):
+    category = get_object_or_404(Categories, category_id=category_id)
+
+    goods = Goods.objects.filter(category=category)
+
+    return render(request, 'shop/category_detail.html', {
+        'category': category,
+        'goods': goods,
+    })
+
+def all_categories_show(request):
+    return render(request, 'shop/categories.html')
