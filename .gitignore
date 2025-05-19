@@ -95,3 +95,6 @@ ipython_config.py
 celerybeat-schedule
 celerybeat.pid
 *.sage.py
+
+# ignore collectstatic output files
+staticfiles/
