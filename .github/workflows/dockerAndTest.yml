@@ -1,0 +1,57 @@
+name: Django Docker Build and Test
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ vars.DEBUG }}
+      MODE: LOCAL
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "DEBUG=${{ vars.DEBUG }}" >> .env
+        echo "MODE=LOCAL" >> .env
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image
+      run: docker build -t onlineshopapp-web .
+
+    - name: Run Docker container in background
+      run: |
+        docker run -d --name onlineshop_test \
+          --env-file .env \
+          -p 8000:8000 onlineshopapp-web
+
+    - name: Wait for container to be ready
+      run: |
+        echo "Waiting for container to be ready..."
+        for i in {1..10}; do
+          curl --fail http://localhost:8000/ && break
+          sleep 3
+        done
+
+    - name: Run Django tests inside container
+      run: |
+        docker exec onlineshop_test python manage.py test --settings=onlineshop.test_settings
+
+    - name: Stop and remove container
+      run: |
+        docker stop onlineshop_test
+        docker rm onlineshop_test
