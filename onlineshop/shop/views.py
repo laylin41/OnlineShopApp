@@ -232,3 +232,50 @@ def category_show(request, category_id):
 
 def all_categories_show(request):
     return render(request, 'shop/categories.html')
+
+
+def add_to_cart(request, good_id):
+    good = get_object_or_404(Goods, good_id=good_id)
+    cart = request.session.get('cart', [])
+
+    if good.good_id in cart:
+        messages.error(request, 'Товар вже в кошику!')
+    else:
+        cart.append(good.good_id)
+        request.session['cart'] = cart
+        request.session['cart_count'] = len(cart)
+        request.session.modified = True
+
+    return redirect('cart_view')
+
+def cart_view(request):
+    cart = request.session.get('cart', [])
+    cart_items = []
+    total_price = 0
+
+    for good_id in cart:
+        good = get_object_or_404(Goods, good_id=good_id)
+        cart_items.append({
+            'good_id': good.good_id,
+            'name': good.name,
+            'price': good.discounted_price,
+        })
+        total_price += good.discounted_price
+
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    return render(request, 'shop/cart.html', context)
+
+def remove_from_cart(request, good_id):
+    cart = request.session.get('cart', [])
+    if good_id in cart:
+        cart.remove(good_id)
+        request.session['cart'] = cart
+        request.session['cart_count'] = len(cart)
+        request.session.modified = True
+    return redirect('cart_view')
+
+def checkout(request):
+    return redirect('cart_view')

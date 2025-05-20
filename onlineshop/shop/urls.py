@@ -15,4 +15,9 @@ path('categories/', views.all_categories_show, name='all_categories_show'),
 
 path('goods/<int:good_id>/', views.goods_detail, name='goods-detail'),
 path('reviews/delete/<int:review_id>/', views.delete_review, name='delete-review'),
+
+path('cart/add/<int:good_id>/', views.add_to_cart, name='add_to_cart'),
+path('cart/show', views.cart_view, name='cart_view'),
+path('cart/remove/<int:good_id>/', views.remove_from_cart, name='remove_from_cart'),
+path('checkout/', views.checkout, name='checkout'),
 ]
