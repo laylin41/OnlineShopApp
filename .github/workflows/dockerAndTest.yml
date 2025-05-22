@@ -47,7 +47,7 @@ jobs:
         docker stop onlineshop_test
         docker rm onlineshop_test
 
-  deploy: # WARNING!!!!! This part I am not sure this will work, need to test.
+  deploy: # This part I am not sure this will work, need to test.
     runs-on: ubuntu-latest
     environment: onlineshop-env # IMPORTANT - or secrets. will not work
     needs: build-test
