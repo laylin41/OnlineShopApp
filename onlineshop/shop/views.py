@@ -3,13 +3,15 @@ from django.http import HttpResponse
 from django.utils.timezone import now
 
 from shop.forms import ReviewForm
-from .forms import RegisterForm, LoginForm, UserProfileForm, ChangePasswordForm
-from common.models import AuthUser, Userprofiles, Goods, Reviews, Categories
+from .forms import RegisterForm, LoginForm, UserProfileForm, ChangePasswordForm, CheckoutForm
+from common.models import AuthUser, Userprofiles, Goods, Reviews, Categories, Ordergood, Orders
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import random, string
+
 
 def index(request):
     goods = Goods.objects.filter(quantity__gt=0)
@@ -262,9 +264,39 @@ def cart_view(request):
         })
         total_price += good.discounted_price
 
+    form = CheckoutForm()
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid() and cart_items:
+            delivery_code = ''.join(random.choices(string.digits, k=14))
+            user_id = request.session.get('user_profile_id')
+            order = Orders.objects.create(
+                delivery_adress_custom=form.cleaned_data['address'],
+                delivery_code=delivery_code,
+                status='Очікує продавця',
+                userprofile_id=user_id
+            )
+
+            for item in cart:
+                good = get_object_or_404(Goods, good_id=int(item))
+                ordergood = Ordergood.objects.create(
+                    order=order,
+                    good=good,
+                )
+                ordergood.save()
+
+            request.session['cart'] = []
+            request.session['cart_count'] = 0
+            request.session.modified = True
+
+            order.save()
+            return redirect('orders_history')
+
     context = {
         'cart_items': cart_items,
         'total_price': total_price,
+        'form': form
     }
     return render(request, 'shop/cart.html', context)
 
@@ -279,3 +311,24 @@ def remove_from_cart(request, good_id):
 
 def checkout(request):
     return redirect('cart_view')
+
+
+def orders_history(request):
+    orders = Orders.objects.filter(userprofile_id=request.session.get('user_profile_id')).order_by('-order_id')
+
+    orders_with_items = []
+    for order in orders:
+        items = Ordergood.objects.filter(order=order)
+        total_price = 0
+        for item in items:
+            total_price += item.good.discounted_price
+        orders_with_items.append({
+            'order': order,
+            'items': items,
+            'total_price': total_price,
+        })
+
+    context = {
+        'orders_with_items': orders_with_items,
+    }
+    return render(request, 'shop/orders_history.html', context)

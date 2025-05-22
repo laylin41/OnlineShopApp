@@ -20,4 +20,5 @@ path('cart/add/<int:good_id>/', views.add_to_cart, name='add_to_cart'),
 path('cart/show', views.cart_view, name='cart_view'),
 path('cart/remove/<int:good_id>/', views.remove_from_cart, name='remove_from_cart'),
 path('checkout/', views.checkout, name='checkout'),
+path('history/', views.orders_history, name='orders_history')
 ]

@@ -54,6 +54,7 @@
         <ul class="navbar-nav ms-auto">
             {% if request.session.user_id %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Мій профіль</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'orders_history' %}">Мої замовлення</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Вийти</a></li>
             {% else %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Авторизуватись</a></li>
