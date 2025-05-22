@@ -2,9 +2,9 @@ name: Django Docker Build and Test
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ prod ]
   pull_request:
-    branches: [ main ]
+    branches: [ prod ]
 
 jobs:
   build-and-test:
