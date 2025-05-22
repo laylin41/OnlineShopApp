@@ -90,6 +90,6 @@ jobs:
     - name: Deploy to Koyeb
       env:
         KOYEB_TOKEN: ${{ secrets.KOYEB_TOKEN }}
-      run: |
+      run: | # Run deploy
         koyeb login --token $KOYEB_TOKEN
         koyeb service redeploy onlineshopapp/web --docker ghcr.io/laylin41/onlineshopapp:latest --region fra
