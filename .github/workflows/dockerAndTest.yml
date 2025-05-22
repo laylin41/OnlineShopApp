@@ -74,8 +74,8 @@ jobs:
         context: .
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}:latest
-          ghcr.io/${{ github.repository }}:${{ github.sha }}
+          ghcr.io/${{ toLowerCase(github.repository) }}:latest
+          ghcr.io/${{ toLowerCase(github.repository) }}:${{ github.sha }}
 
     - name: Deploy to Koyeb
       uses: koyeb/action-git-deploy@v1
@@ -83,5 +83,5 @@ jobs:
         token: ${{ secrets.KOYEB_TOKEN }}
         app_name: onlineshopapp
         service_name: web
-        docker_image: ghcr.io/${{ github.repository }}:latest
+        docker_image: ghcr.io/${{ toLowerCase(github.repository) }}:latest
         regions: fra
