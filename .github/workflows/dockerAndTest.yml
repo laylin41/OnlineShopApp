@@ -69,7 +69,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build & Push Docker image to GHCR
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         push: true
@@ -79,7 +79,14 @@ jobs:
 
     - name: Install Koyeb CLI
       run: |
-        curl -fsSL https://bin.koyeb.com/install.sh | sh
+        curl -s https://api.github.com/repos/koyeb/koyeb-cli/releases/latest \
+          | grep "browser_download_url.*koyeb-cli-linux-x86_64" \
+          | cut -d : -f 2,3 \
+          | tr -d \" \
+          | wget -qi - -O /usr/local/bin/koyeb
+        chmod +x /usr/local/bin/koyeb
+        which koyeb || echo "koyeb not found"
+        koyeb --version || echo "Failed to run koyeb --version"
     - name: Deploy to Koyeb
       env:
         KOYEB_TOKEN: ${{ secrets.KOYEB_TOKEN }}
