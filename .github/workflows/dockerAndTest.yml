@@ -49,7 +49,7 @@ jobs:
 
   deploy: # This part I am not sure this will work, need to test.
     runs-on: ubuntu-latest
-    environment: onlineshop-env # IMPORTANT - or secrets. will not work
+    environment: onlineshop-env # IMPORTANT - or secrets will not work
     needs: build-test
     if: github.event_name == 'push' # configure this like you want idk really
 
