@@ -3,15 +3,31 @@
 from django.db import models
 from django.db.models import Avg
 from django.utils.text import slugify
+from django.contrib.auth.hashers import make_password
+
+from onlineshop import settings
+
 
 class Categories(models.Model):
     category_id = models.AutoField(db_column='Category_ID', primary_key=True) 
     category_name = models.CharField(db_column='Category_Name', blank=True, null=True)
+    image = models.ImageField(db_column='Image', upload_to='category_images/', blank=True, null=True)
+    is_visible = models.BooleanField(db_column='Is_Visible', default=True)
 
     class Meta:
         managed = False
         db_table = 'Categories'
         verbose_name_plural = 'Categories'
+
+    def get_image_or_default(self):
+        if self.image:
+            return self.image.url
+        return f"{settings.STATIC_URL}images/default-category.jpeg"
+
+    def __iter__(self):
+        goods = self.goods.all()
+        for good in goods:
+            yield good
 
     def __str__(self):
         return f"Category: {self.category_name}"
@@ -31,15 +47,16 @@ class Droppoints(models.Model):
 
 
 class Goods(models.Model):
-    good_id = models.AutoField(db_column='Good_ID', primary_key=True)  
-    category = models.ForeignKey('Categories', on_delete=models.SET_NULL, db_column='Category_ID', blank=True, null=True)
-    name = models.CharField(db_column='Name', blank=True, null=True)  
-    slug = models.SlugField(db_column='Slug', blank=True, null=True) 
-    price = models.FloatField(db_column='Price', blank=True, null=True) 
-    discount = models.IntegerField(db_column='Discount', blank=True, null=True)  
-    description = models.TextField(db_column='Description', blank=True, null=True)  
-    characteristics = models.TextField(db_column='Characteristics', blank=True, null=True) 
-    rating = models.FloatField(db_column='Rating', blank=True, null=True) 
+    good_id = models.AutoField(db_column='Good_ID', primary_key=True)
+    category = models.ForeignKey('Categories', on_delete=models.SET_NULL, related_name='goods', db_column='Category_ID',
+                                 blank=True, null=True)
+    name = models.CharField(db_column='Name', blank=True, null=True)
+    slug = models.SlugField(db_column='Slug', blank=True, null=True)
+    price = models.FloatField(db_column='Price', blank=True, null=True)
+    discount = models.IntegerField(db_column='Discount', blank=True, null=True)
+    description = models.TextField(db_column='Description', blank=True, null=True)
+    characteristics = models.TextField(db_column='Characteristics', blank=True, null=True)
+    rating = models.FloatField(db_column='Rating', blank=True, null=True)
     quantity = models.IntegerField(db_column='Quantity', blank=True, null=True)
 
     @property
@@ -62,13 +79,18 @@ class Goods(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-    
+
+    def get_main_image(self):
+        # Отримує головне зображення (перше)
+        main_image = GoodImage.objects.filter(good=self).first()
+        return main_image.image.url if main_image else None
+
     def __str__(self):
         return f"Good: {self.name} (ID: {self.good_id})"
     
 class GoodImage(models.Model):
     goodimage_id = models.AutoField(db_column='GoodImage_ID', primary_key=True)
-    good = models.ForeignKey('Goods', on_delete=models.CASCADE, db_column='Good_ID', blank=True, null=True)
+    good = models.ForeignKey('Goods', on_delete=models.CASCADE, related_name='good_images', db_column='Good_ID', blank=True, null=True)
     image = models.ImageField(db_column='Image', upload_to='goods_images/', blank=True, null=True)
 
     class Meta:
@@ -193,6 +215,9 @@ class AuthUser(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_user'
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
 
     def __str__(self):
         return f"AuthUser: {self.username} (ID:{self.id})"

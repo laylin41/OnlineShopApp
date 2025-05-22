@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Кошик
+{% endblock %}
+
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+    {% include 'includes/messages.html' %}
+<div class="container mt-5">
+    <h2>Ваш кошик</h2>
+    {% if cart_items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Ціна</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            {{ item.price }} грн
+                        </td>
+                        <td><a href="{% url 'remove_from_cart' good_id=item.good_id %}" class="btn btn-danger btn-sm">Видалити</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Загальна сума: {{ total_price }} грн</strong></p>
+
+        {% if request.session.user_id %}
+        <h4 class="mt-4">Дані для доставки</h4>
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {{ field }}: {{ errors|join:", " }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post" class="border p-4 rounded shadow-sm bg-light">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-lg mt-3">Підтвердити замовлення</button>
+        </form>
+{#        <a href="{% url 'checkout' %}" class="btn btn-primary">Оформити замовлення</a>#}
+        {% endif %}
+    {% else %}
+        <p>Ваш кошик порожній.</p>
+    {% endif %}
+</div>
+{% endblock %}
