@@ -24,7 +24,7 @@
                 {% if good.quantity > 0 %}
                     <div class="col mb-5">
                         <div class="card h-100 p-3">
-                            {% with good.goodimage_set.first as image %}
+                            {% with good.good_images.first as image %}
                               {% if image %}
                                 <img src="{{ image.image.url }}" class="card-img-top" alt="{{ good.name }}">
                               {% endif %}
