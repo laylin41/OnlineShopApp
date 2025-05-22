@@ -82,3 +82,17 @@ class ReviewForm(forms.ModelForm):
             'comment': 'Коментар'
         }
 
+
+class CheckoutForm(forms.Form):
+    address = forms.CharField(
+        max_length=255,
+        widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Введіть адресу доставки'}),
+        label='Адреса доставки'
+    )
+    # phone = forms.CharField(max_length=20, label='Номер телефону')
+    # notes = forms.CharField(
+    #     max_length=500,
+    #     widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Додаткові примітки (необов’язково)'}),
+    #     required=False,
+    #     label='Примітки'
+    # )

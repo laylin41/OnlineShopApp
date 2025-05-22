@@ -12,7 +12,7 @@
     <div class="row">
         <!-- Зображення -->
         <div class="col-md-6">
-            {% with good.goodimage_set.first as image %}
+            {% with good.good_images.first as image %}
                 {% if image %}
                     <img src="{{ image.image.url }}" class="img-fluid rounded shadow" alt="{{ good.name }}">
                 {% else %}
@@ -38,7 +38,7 @@
             <p><strong>Характеристики:</strong> {{ good.characteristics }}</p>
 
             <!-- Кнопка "Купити" -->
-            <form method="post" action="#">
+            <form method="post" action="{% url 'add_to_cart' good_id=good.good_id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success btn-lg mt-3 w-100">
                     <i class="bi bi-cart-plus me-2"></i> Купити

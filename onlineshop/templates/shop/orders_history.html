@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Замовлення{% endblock %}
+
+{% block head %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Мої замовлення</h2>
+
+    {% if orders_with_items %}
+        {% for order_data in orders_with_items %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Замовлення #{{ order_data.order.delivery_code }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Всього</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_data.items %}
+                                <tr>
+                                    <td>{{ item.good.name }}</td>
+                                    <td>{{ item.good.discounted_price }} грн</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p><strong>Загальна сума: {{ order_data.total_price }} грн</strong></p>
+                    <p><strong>Статус: {{ order_data.order.status }}</strong></p>
+                    <p><strong>Адреса доставки:</strong> {{ order_data.order.delivery_adress_custom }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">У вас ще немає замовлень.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Повернутися до магазину</a>
+    {% endif %}
+</div>
+{% endblock %}
