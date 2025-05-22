@@ -92,4 +92,4 @@ jobs:
         KOYEB_TOKEN: ${{ secrets.KOYEB_TOKEN }}
       run: | # Run deploy
         koyeb login --token $KOYEB_TOKEN
-        koyeb service redeploy onlineshopapp/web --docker ghcr.io/laylin41/onlineshopapp:latest --region fra
+        koyeb service redeploy rural-molly/onlineshopapp
