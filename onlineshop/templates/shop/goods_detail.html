@@ -12,7 +12,7 @@
     <div class="row">
         <!-- Зображення -->
         <div class="col-md-6">
-            {% with good.goodimage_set.first as image %}
+            {% with good.good_images.first as image %}
                 {% if image %}
                     <img src="{{ image.image.url }}" class="img-fluid rounded shadow" alt="{{ good.name }}">
                 {% else %}
