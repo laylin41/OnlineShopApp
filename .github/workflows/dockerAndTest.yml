@@ -77,11 +77,12 @@ jobs:
           ghcr.io/laylin41/onlineshopapp:latest
           ghcr.io/laylin41/onlineshopapp:${{ github.sha }}
 
+    - name: Install Koyeb CLI
+      run: |
+        npm install -g @koyeb/cli
     - name: Deploy to Koyeb
-      uses: koyeb/action-git-deploy@v1
-      with:
-        token: ${{ secrets.KOYEB_TOKEN }}
-        app_name: onlineshopapp
-        service_name: web
-        docker_image: ghcr.io/laylin41/onlineshopapp:latest
-        regions: fra
+      env:
+        KOYEB_TOKEN: ${{ secrets.KOYEB_TOKEN }}
+      run: |
+        koyeb login --token $KOYEB_TOKEN
+        koyeb service redeploy onlineshopapp/web --docker ghcr.io/laylin41/onlineshopapp:latest --region fra
