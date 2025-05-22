@@ -2,9 +2,9 @@ name: Test & Deploy to Koyeb
 
 on: # configure this like you want idk really
   push:
-    branches: [ main ]
+    branches: [ prod ]
   pull_request:
-    branches: [ main ]
+    branches: [ prod ]
 
 env: # this is for deployment (we push the image to github container repo, then use that image for deployment)
   REGISTRY: ghcr.io
