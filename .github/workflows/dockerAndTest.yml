@@ -77,7 +77,7 @@ jobs:
           ghcr.io/laylin41/onlineshopapp:latest
           ghcr.io/laylin41/onlineshopapp:${{ github.sha }}
 
-    - name: Install Koyeb CLI
+    - name: Install Koyeb CLI # Installing from GitHub
       run: |
         curl -s https://api.github.com/repos/koyeb/koyeb-cli/releases/latest \
           | grep "browser_download_url.*koyeb-cli-linux-x86_64" \
