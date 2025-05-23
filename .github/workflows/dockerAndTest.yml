@@ -77,22 +77,14 @@ jobs:
           ghcr.io/laylin41/onlineshopapp:latest
           ghcr.io/laylin41/onlineshopapp:${{ github.sha }}
 
-    - name: Install Koyeb CLI # Installing from GitHub
-      run: |
-        curl -s https://api.github.com/repos/koyeb/koyeb-cli/releases/latest \
-          | grep "browser_download_url.*koyeb-cli-linux-x86_64" \
-          | cut -d : -f 2,3 \
-          | tr -d \" \
-          | wget -qi - -O /usr/local/bin/koyeb
-        chmod +x /usr/local/bin/koyeb
-        which koyeb || echo "koyeb not found"
-        koyeb --version || echo "Failed to run koyeb --version"
-    - name: Deploy to Koyeb
-      env:
-        KOYEB_TOKEN: ${{ secrets.KOYEB_TOKEN }}
-      run: |
-        koyeb login --token $KOYEB_TOKEN
-        koyeb service describe onlineshopapp/web
-        koyeb service redeploy onlineshopapp/web --docker ghcr.io/laylin41/onlineshopapp:${{ github.sha }} --region fra
-        koyeb service restart onlineshopapp/web
-        koyeb service logs onlineshopapp/web --type deployment
+    - name: Install and configure the Koyeb CLI
+      uses: koyeb-community/koyeb-actions@v2
+      with:
+        api_token: "${{ secrets.KOYEB_TOKEN }}"
+
+    - name: Build and deploy the application to Koyeb
+      uses: koyeb/action-git-deploy@v1
+      with:
+        service-env: PORT=8000
+        service-ports: "8000:http"
+        service-routes: "/:8000"
