@@ -47,19 +47,18 @@ jobs:
         docker stop onlineshop_test
         docker rm onlineshop_test
 
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        - name: Deploy to Koyeb
-          uses: koyeb/action-git-deploy@v1
-          with:
-            git-url: git@github.com:laylin41/OnlineShopApp.git
-            branch: prod
-            directory: .
-            git-builder: buildpack
-            deploy-key: ${{ secrets.KOYEB_TOKEN }}
+      - name: Deploy to Koyeb
+        uses: koyeb/action-git-deploy@v1
+        with:
+          git-url: git@github.com:laylin41/OnlineShopApp
+          branch: prod
+          directory: .
+          git-builder: buildpack
+          deploy-key: ${{ secrets.KOYEB_TOKEN }}
