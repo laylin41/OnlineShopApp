@@ -47,44 +47,19 @@ jobs:
         docker stop onlineshop_test
         docker rm onlineshop_test
 
-  deploy: # This part I am not sure this will work, need to test.
-    runs-on: ubuntu-latest
-    environment: onlineshop-env # IMPORTANT - or secrets will not work
-    needs: build-test
-    if: github.event_name == 'push' # configure this like you want idk really
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build & Push Docker image to GHCR
-      uses: docker/build-push-action@v6 # Updated action version
-      with:
-        context: .
-        push: true
-        tags: |
-          ghcr.io/laylin41/onlineshopapp:latest
-          ghcr.io/laylin41/onlineshopapp:${{ github.sha }}
-
-    - name: Install and configure the Koyeb CLI
-      uses: koyeb-community/koyeb-actions@v2
-      with:
-        api_token: "${{ secrets.KOYEB_TOKEN }}"
-
-    - name: Build and deploy the application to Koyeb
-      uses: koyeb/action-git-deploy@v1
-      with:
-        service-env: PORT=8000
-        service-ports: "8000:http"
-        service-routes: "/:8000"
+        - name: Deploy to Koyeb
+          uses: koyeb/action-git-deploy@v1
+          with:
+            git-url: git@github.com:laylin41/OnlineShopApp.git
+            branch: prod
+            directory: .
+            git-builder: buildpack
+            deploy-key: ${{ secrets.KOYEB_TOKEN }}
