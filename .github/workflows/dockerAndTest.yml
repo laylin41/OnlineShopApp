@@ -63,6 +63,9 @@ jobs:
         uses: koyeb/action-git-deploy@v1
         with:
           app-name: onlineshopapp
-          git-url: git@github.com:laylin41/OnlineShopApp
-          git-branch: prod
-          git-builder: buildpack
+          service-ports: "8000:http"
+          service-routes: "/:8000"
+          git-builder: docker
+          git-docker-dockerfile: Dockerfile
+          privileged: true
+          skip-cache: true
