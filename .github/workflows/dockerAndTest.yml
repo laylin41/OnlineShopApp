@@ -63,6 +63,7 @@ jobs:
         uses: koyeb/action-git-deploy@v1
         with:
           app-name: onlineshopapp
+          service-name: prod
           service-ports: "8000:http"
           service-routes: "/:8000"
           git-builder: docker
